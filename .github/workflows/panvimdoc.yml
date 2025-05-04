@@ -1,0 +1,29 @@
+name: panvimdoc
+on:
+  push:
+    branches: [main]
+    paths:
+      - README.md
+      - .github/workflows/panvimdoc.yml
+permissions:
+  contents: write
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    name: pandoc to vimdoc
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: kdheepak/panvimdoc@v4.0.1
+        with:
+          vimdoc: nvim-plugin-template
+          pandoc: "README.md"
+          version: "NVIM v0.10.0"
+          toc: true
+          dedupsubheadings: true
+          treesitter: true
+          demojify: true
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: generate help from md"
+          branch: ${{ github.head_ref }}
